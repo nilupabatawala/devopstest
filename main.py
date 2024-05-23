@@ -22,7 +22,7 @@ def publish_message(message: str):
 
 #consume message from the queue
 @app.get("/consume")
-def publish_message():
+def consume_message():
     return {"Message": "Consumed"}
 
 
