@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fast-deployment
+  labels:
+    app: fast
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: fast
+  template:
+    metadata:
+      labels:
+        app: fast
+    spec:
+      containers:
+      - name: fast
+        image: nilupab/rabbitmqapp:1.0.2
+        ports:
+        - containerPort: 8000
+       

@@ -1,0 +1,30 @@
+Steps Followed.
+
+1. RabbitMq was used for the messaging queue, create k8s manifests to deploy rabbitmq:3.13-management in EKS cluster.
+2. Brougt up the Rabbit MQ management console sucessully
+3. create the python app using fast api, create a publish method to publish messages to the rabbit MQ
+$ curl -X 'POST'   'http://51.20.140.118:30872/publish?message=test123'   -H 'accept: application/json'   -d ''
+{"Message":true,"Channel":true}
+4. Dockerized the python app and pushed it to dockerhub then created k8s manifests to deploy the fast-api deployment in k8s cluster
+    $ kubectl get pods
+NAME                                  READY   STATUS    RESTARTS   AGE
+fast-deployment-5b57945c4-jkpq8       1/1     Running   0          32m
+fast-deployment-5b57945c4-nltqq       1/1     Running   0          32m
+fast-deployment-5b57945c4-tvsz7       1/1     Running   0          32m
+rabbitmq-deployment-f7b55554c-4jfd8   1/1     Running   0          85m
+rabbitmq-deployment-f7b55554c-55cdh   1/1     Running   0          85m
+rabbitmq-deployment-f7b55554c-xkhkg   1/1     Running   0          85m
+5. From the fast-api pod logs observed sucess response for published messages
+    INFO:     10.0.1.217:40957 - "POST /publish?message=test123 HTTP/1.1" 200 OK
+6. Used inbuilt fast swagger API to publish message to the queue.
+7. AWS EKS was used as the container orchestration platform to deploy fast-api and rabbit MQ
+8. Used Nodeport K8s services to expose the rabbitmq console and fast-api end points
+$ kubectl get svc
+NAME               TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                          AGE
+fast-service       NodePort    172.20.234.248   <none>        8000:30872/TCP                   53m
+kubernetes         ClusterIP   172.20.0.1       <none>        443/TCP                          6h32m
+rabbitmq-service   NodePort    172.20.119.88    <none>        5672:30402/TCP,15672:31812/TCP   86m
+
+To complete the task I need to create a front end application to invoke fast-api published method implemented and also need to create consumer method to retrieve the message from the queue and print in a log file.
+
+
